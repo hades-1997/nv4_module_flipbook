@@ -8,13 +8,13 @@
  * @Createdate Jul 06, 2011, 06:31:13 AM
  */
 
-if (!defined('NV_IS_MOD_LAWS')) die('Stop!!!');
+if (!defined('NV_IS_MOD_FLIPBOOK')) die('Stop!!!');
 
 if (!function_exists('nv_law_block_10area')) {
 
     function nv_law_block_10area()
     {
-        global $lang_module, $module_info, $module_file, $global_config, $nv_laws_listarea, $module_name, $db, $module_data;
+        global $lang_module, $module_info, $module_file, $global_config, $nv_flipbook_listarea, $module_name, $db, $module_data;
         
         if (file_exists(NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file . '/block_top10_area.tpl')) {
             $block_theme = $global_config['module_theme'];
@@ -30,10 +30,10 @@ if (!function_exists('nv_law_block_10area')) {
         
         $title_length = 34;
         
-        unset($nv_laws_listarea[0]);
+        unset($nv_flipbook_listarea[0]);
         
         $i = 1;
-        foreach ($nv_laws_listarea as $cat) {
+        foreach ($nv_flipbook_listarea as $cat) {
             if ($cat['parentid'] == 0) {
                 $in = "";
                 if (empty($cat['subcats'])) {

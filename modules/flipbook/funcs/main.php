@@ -8,7 +8,7 @@
  * @Createdate Wed, 27 Jul 2011 14:55:22 GMT
  */
 
-if (!defined('NV_IS_MOD_LAWS')) {
+if (!defined('NV_IS_MOD_FLIPBOOK')) {
     die('Stop!!!');
 }
 
@@ -30,7 +30,7 @@ if ($page < 1 or ($issetPage and $page < 2)) {
 }
 
 $contents = $cache_file = '';
-$per_page = $nv_laws_setting['nummain'];
+$per_page = $nv_flipbook_setting['nummain'];
 $base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name;
 
 if (!defined('NV_IS_MODADMIN') and $page < 5) {
@@ -41,10 +41,10 @@ if (!defined('NV_IS_MODADMIN') and $page < 5) {
 }
 
 if (empty($contents)) {
-    if ($nv_laws_setting['typeview'] != 2) {
+    if ($nv_flipbook_setting['typeview'] != 2) {
         // Danh sách văn bản dạng list. typeview=2 => Phân theo cơ quan ban hành
-        $order = ($nv_laws_setting['typeview'] == 1 or $nv_laws_setting['typeview'] == 4) ? "ASC" : "DESC";
-        $order_param = ($nv_laws_setting['typeview'] == 0 or $nv_laws_setting['typeview'] == 1) ? "publtime" : "addtime";
+        $order = ($nv_flipbook_setting['typeview'] == 1 or $nv_flipbook_setting['typeview'] == 4) ? "ASC" : "DESC";
+        $order_param = ($nv_flipbook_setting['typeview'] == 0 or $nv_flipbook_setting['typeview'] == 1) ? "publtime" : "addtime";
 
         $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE status=1 ORDER BY " . $order_param . " " . $order . "
         LIMIT " . $per_page . " OFFSET " . (($page - 1) * $per_page);
@@ -60,16 +60,16 @@ if (empty($contents)) {
             nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name);
         }
 
-        $contents = nv_theme_laws_main($array_data, $generate_page);
+        $contents = nv_theme_flipbook_main($array_data, $generate_page);
     } else {
         // Văn bản phân theo cơ quan ban hành
-        if (!empty($nv_laws_listsubject)) {
-            foreach ($nv_laws_listsubject as $subjectid => $subject) {
+        if (!empty($nv_flipbook_listsubject)) {
+            foreach ($nv_flipbook_listsubject as $subjectid => $subject) {
                 $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sid=' . $subjectid . ' AND status=1 ORDER BY addtime DESC LIMIT ' . $subject['numlink']);
-                $nv_laws_listsubject[$subjectid]['rows'] = raw_law_list_by_result($result);
+                $nv_flipbook_listsubject[$subjectid]['rows'] = raw_law_list_by_result($result);
             }
         }
-        $contents = nv_theme_laws_maincat('subject', $nv_laws_listsubject);
+        $contents = nv_theme_flipbook_maincat('subject', $nv_flipbook_listsubject);
     }
 
     if (!defined('NV_IS_MODADMIN') and $contents != '' and $cache_file != '') {

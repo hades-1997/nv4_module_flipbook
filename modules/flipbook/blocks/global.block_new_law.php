@@ -12,14 +12,14 @@ if (!defined('NV_MAINFILE')) die('Stop!!!');
 
 if (!nv_function_exists('nv_law_block_newg')) {
     /**
-     * nv_block_config_new_laws()
+     * nv_block_config_new_flipbook()
      *
      * @param mixed $module
      * @param mixed $data_block
      * @param mixed $lang_block
      * @return
      */
-    function nv_block_config_new_laws($module, $data_block, $lang_block)
+    function nv_block_config_new_flipbook($module, $data_block, $lang_block)
     {
         $html = '';
         $html .= '<div class="form-group">';
@@ -78,13 +78,13 @@ if (!nv_function_exists('nv_law_block_newg')) {
     }
 
     /**
-     * nv_block_config_new_laws_submit()
+     * nv_block_config_new_flipbook_submit()
      *
      * @param mixed $module
      * @param mixed $lang_block
      * @return
      */
-    function nv_block_config_new_laws_submit($module, $lang_block)
+    function nv_block_config_new_flipbook_submit($module, $lang_block)
     {
         global $nv_Request;
         $return = array();
@@ -109,7 +109,7 @@ if (!nv_function_exists('nv_law_block_newg')) {
      */
     function nv_law_block_newg($block_config)
     {
-        global $module_info, $lang_module, $global_config, $site_mods, $db, $my_head, $module_name, $nv_laws_listcat, $nv_Cache;
+        global $module_info, $lang_module, $global_config, $site_mods, $db, $my_head, $module_name, $nv_flipbook_listcat, $nv_Cache;
 
         $module = $block_config['module'];
         $data = $site_mods[$module]['module_data'];
@@ -135,9 +135,9 @@ if (!nv_function_exists('nv_law_block_newg')) {
 
             if ($module_name != $module) {
                 $sql = "SELECT id, parentid, alias, title, introduction, keywords, newday FROM " . NV_PREFIXLANG . "_" . $data . "_cat ORDER BY parentid,weight ASC";
-                $nv_laws_listcat = $nv_Cache->db($sql, 'id', $module);
+                $nv_flipbook_listcat = $nv_Cache->db($sql, 'id', $module);
 
-                $my_head .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"" . NV_BASE_SITEURL . "themes/" . $block_theme . "/css/laws.css\" />";
+                $my_head .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"" . NV_BASE_SITEURL . "themes/" . $block_theme . "/css/flipbook.css\" />";
 
                 $temp_lang_module = $lang_module;
                 $lang_module = array();
@@ -153,7 +153,7 @@ if (!nv_function_exists('nv_law_block_newg')) {
             $xtpl->assign('TEMPLATE', $block_theme);
 
             while ($row = $result->fetch()) {
-                $newday = $row['publtime'] + (86400 * $nv_laws_listcat[$row['cid']]['newday']);
+                $newday = $row['publtime'] + (86400 * $nv_flipbook_listcat[$row['cid']]['newday']);
 
                 $link = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module . '&amp;' . NV_OP_VARIABLE . '=' . $site_mods[$module]['alias']['detail'] . '/' . $row['alias'];
                 $row['link'] = $link;

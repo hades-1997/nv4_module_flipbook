@@ -19,9 +19,9 @@ $module_version = [
     'change_alias' => 'detail',
     'is_sysmod' => 0,
     'virtual' => 1,
-    'version' => '4.3.05',
-    'date' => 'Thursday, March 21, 2019 6:12:17 AM GMT+07:00',
-    'author' => 'VINADES <contact@vinades.vn>',
+    'version' => '4.5.01',
+    'date' => '',
+    'author' => 'DACLOI <saka.dacloi@gmail.com>',
     'uploads_dir' => [
         $module_upload
     ],

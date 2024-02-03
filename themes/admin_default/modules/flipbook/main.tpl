@@ -118,13 +118,13 @@
             </select>
         </div>
         <div class="form-group">
-            <button class="btn btn-primary" onclick="nv_search_laws(); return false;">{LANG.search}</button>
+            <button class="btn btn-primary" onclick="nv_search_flipbook(); return false;">{LANG.search}</button>
         </div>
     </form>
 </div>
 <!-- BEGIN: view_add -->
 <div style="text-align: left; margin-bottom: 10px;">
-    <input name="submit" onclick="window.location='{ADD_LINK}';" type="button" value="{LANG.add_laws}" class="btn btn-primary" />
+    <input name="submit" onclick="window.location='{ADD_LINK}';" type="button" value="{LANG.add_flipbook}" class="btn btn-primary" />
 </div>
 <!-- END: view_add -->
 <div id="lawlist">
@@ -135,11 +135,11 @@
 <script type="text/javascript">
     $('.select2').select2();
 
-    function nv_load_laws(url, area) {
+    function nv_load_flipbook(url, area) {
         $('#lawlist').load(rawurldecode(url));
     }
 
-    function nv_search_laws() {
+    function nv_search_flipbook() {
         var keywords = $('input[name="keywords"]').val();
         var cid = $('select[name="cid"]').val();
         var aid = $('select[name="aid"]').val();
@@ -223,7 +223,7 @@
                                 </select></td>
                             </tr>
                             <!-- END: comment-->
-                            <!-- BEGIN: normal_laws -->
+                            <!-- BEGIN: normal_flipbook -->
                             <tr class="form-inline">
                                 <td>{LANG.publtime} <span class="red">*</span></td>
                                 <td><label> <input class="form-control" name="publtime" id="publtime" value="{DATA.publtime}" style="width: 110px;" maxlength="10" type="text" /> &nbsp;({LANG.prm})
@@ -255,7 +255,7 @@
                                     });
                                 </script></td>
                             </tr>
-                            <!-- END: normal_laws -->
+                            <!-- END: normal_flipbook -->
                             <tr>
                                 <td>{LANG.replacement} ({LANG.ID})</td>
                                 <td><input class="form-control" title="{LANG.replacement}" type="text" name="replacement" id="replacement" style="width: 200px;" maxlength="255" value="{DATA.replacement}" /></td>

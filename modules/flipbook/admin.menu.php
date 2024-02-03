@@ -14,14 +14,14 @@ if (!defined('NV_ADMIN')) {
 
 global $module_config, $array_subject_admin, $admin_id;
 
-if (!function_exists('nv_laws_array_subject_admin')) {
+if (!function_exists('nv_flipbook_array_subject_admin')) {
 
     /**
-     * nv_laws_array_subject_admin()
+     * nv_flipbook_array_subject_admin()
      *
      * @return
      */
-    function nv_laws_array_subject_admin($module_data)
+    function nv_flipbook_array_subject_admin($module_data)
     {
         global $db_slave;
 
@@ -38,7 +38,7 @@ if (!function_exists('nv_laws_array_subject_admin')) {
 }
 
 $is_refresh = false;
-$array_subject_admin = nv_laws_array_subject_admin($module_data);
+$array_subject_admin = nv_flipbook_array_subject_admin($module_data);
 
 if (!empty($module_info['admins'])) {
     $module_admin = explode(',', $module_info['admins']);
@@ -50,7 +50,7 @@ if (!empty($module_info['admins'])) {
     }
 }
 if ($is_refresh) {
-    $array_subject_admin = nv_laws_array_subject_admin($module_data);
+    $array_subject_admin = nv_flipbook_array_subject_admin($module_data);
 }
 
 $admin_id = $admin_info['admin_id'];

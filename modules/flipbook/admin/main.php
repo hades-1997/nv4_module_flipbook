@@ -114,7 +114,8 @@ $xtpl->assign('MODULE_NAME', $module_name);
 $xtpl->assign('MODULE_DATA', $module_data);
 $xtpl->assign('MODULE_URL', NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name . "&" . NV_OP_VARIABLE);
 $xtpl->assign('OP', $op);
-$xtpl->assign('UPLOADS_DIR_USER', NV_UPLOADS_DIR . '/' . $module_upload);
+$xtpl->assign('UPLOADS_DIR_USER', $uploads_dir_user);
+$xtpl->assign('UPLOAD_CURRENT', $currentpath);
 
 if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
     if (empty($catList)) {
@@ -598,7 +599,7 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
         if ($module_config[$module_name]['activecomm']) {
             $xtpl->parse('add.comment');
         } else {
-            $xtpl->parse('add.normal_laws');
+            $xtpl->parse('add.normal_flipbook');
         }
 
         $xtpl->assign('NUMFILE', count($post['files']));
@@ -783,7 +784,7 @@ if (empty($all_page) and !$nv_Request->isset_request('add', 'get')) {
             } else {
                 $xtpl->parse('list.view_time_title');
             }
-            $generate_page = nv_generate_page($base_url, $all_page, $per_page, $page, true, true, "nv_load_laws", "data");
+            $generate_page = nv_generate_page($base_url, $all_page, $per_page, $page, true, true, "nv_load_flipbook", "data");
 
             $xtpl->assign('NV_GENERATE_PAGE', $generate_page);
             if ($check) {

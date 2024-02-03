@@ -12,7 +12,7 @@ if (!defined('NV_SYSTEM')) {
     die('Stop!!!');
 }
 
-define('NV_IS_MOD_LAWS', true);
+define('NV_IS_MOD_FLIPBOOK', true);
 
 /**
  * nv_module_setting()
@@ -61,14 +61,14 @@ function nv_setcats($id, $list, $name, $is_parentlink)
 }
 
 /**
- * nv_laws_listcat()
+ * nv_flipbook_listcat()
  *
  * @param bool $is_link
  * @param bool $is_parentlink
  * @param string $where
  * @return
  */
-function nv_laws_listcat($is_link = false, $is_parentlink = true, $where = 'cat')
+function nv_flipbook_listcat($is_link = false, $is_parentlink = true, $where = 'cat')
 {
     global $module_data, $module_name, $module_info, $nv_Cache;
 
@@ -134,15 +134,15 @@ function nv_get_start_id($page, $per_page)
  */
 function raw_law_list_by_result($result, $page = 1, $per_page = 1)
 {
-    global $db_slave, $module_data, $nv_laws_listsubject, $nv_laws_listarea, $nv_laws_listcat, $module_name, $module_info, $site_mods, $module_config, $nv_laws_setting, $lang_module;
+    global $db_slave, $module_data, $nv_flipbook_listsubject, $nv_flipbook_listarea, $nv_flipbook_listcat, $module_name, $module_info, $site_mods, $module_config, $nv_flipbook_setting, $lang_module;
 
     $array = $array_ids = [];
     $stt = nv_get_start_id($page, $per_page);
 
     while ($row = $result->fetch()) {
         $row['areatitle'] = '';
-        $row['subjecttitle'] = $nv_laws_listsubject[$row['sid']]['title'];
-        $row['cattitle'] = $nv_laws_listcat[$row['cid']]['title'];
+        $row['subjecttitle'] = $nv_flipbook_listsubject[$row['sid']]['title'];
+        $row['cattitle'] = $nv_flipbook_listcat[$row['cid']]['title'];
         $row['url'] = nv_url_rewrite(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $module_info['alias']['detail'] . "/" . $row['alias'], true);
         $row['comm_url'] = nv_url_rewrite(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $module_info['alias']['detail'] . "/" . $row['alias'], true);
 
@@ -157,7 +157,7 @@ function raw_law_list_by_result($result, $page = 1, $per_page = 1)
         $row['stt'] = $stt ++;
         $row['edit_link'] = NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;edit=1&amp;id=" . $row['id'];
 
-        if ($nv_laws_setting['down_in_home']) {
+        if ($nv_flipbook_setting['down_in_home']) {
             // File download
             if (!empty($row['files'])) {
                 $row['files'] = explode(",", $row['files']);
@@ -184,8 +184,8 @@ function raw_law_list_by_result($result, $page = 1, $per_page = 1)
         $array_areas = [];
         $_result = $db_slave->query('SELECT row_id, area_id FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row_area WHERE row_id IN(' . implode(',', $array_ids) . ')');
         while ($row = $_result->fetch()) {
-            if (isset($nv_laws_listarea[$row['area_id']])) {
-                $array_areas[$row['row_id']][] = $nv_laws_listarea[$row['area_id']]['title'];
+            if (isset($nv_flipbook_listarea[$row['area_id']])) {
+                $array_areas[$row['row_id']][] = $nv_flipbook_listarea[$row['area_id']]['title'];
             }
         }
         foreach ($array_areas as $_id => $_title) {
@@ -211,15 +211,15 @@ function raw_law_list_by_result($result, $page = 1, $per_page = 1)
     return $array;
 }
 
-global $nv_laws_listcat, $nv_laws_listarea, $nv_laws_listsubject, $nv_laws_setting;
-$nv_laws_listcat = nv_laws_listcat();
-$nv_laws_listarea = nv_laws_listcat(false, false, 'area');
-$nv_laws_setting = nv_module_setting();
+global $nv_flipbook_listcat, $nv_flipbook_listarea, $nv_flipbook_listsubject, $nv_flipbook_setting;
+$nv_flipbook_listcat = nv_flipbook_listcat();
+$nv_flipbook_listarea = nv_flipbook_listcat(false, false, 'area');
+$nv_flipbook_setting = nv_module_setting();
 
 $sql = "SELECT * FROM " . NV_PREFIXLANG . "_" . $module_data . "_subject ORDER BY weight ASC";
 $list = $nv_Cache->db($sql, 'id', $module_name);
 foreach ($list as $row) {
-    $nv_laws_listsubject[$row['id']] = $row;
+    $nv_flipbook_listsubject[$row['id']] = $row;
 }
 
 $rss[] = array(
@@ -228,49 +228,71 @@ $rss[] = array(
 );
 
 $catid = 0;
-$catalias = "";
-
-if ($op == "main") {
+$catalias = isset($array_op[0]) ? $array_op[0] : "";
+$count_op = sizeof($array_op);
+//var_dump($count_op );die;
+if (!empty($array_op) and $op == "main") {
     $nv_vertical_menu = [];
 
-    if (!empty($nv_laws_listcat)) {
-        if (!empty($array_op)) {
-            $catalias = isset($array_op[0]) ? $array_op[0] : "";
-        }
-
+    if (!empty($nv_flipbook_listcat)) {
         // Xac dinh ID cua chu de
-        foreach ($nv_laws_listcat as $c) {
+        foreach ($nv_flipbook_listcat as $c) {
             if ($c['alias'] == $catalias) {
                 $catid = intval($c['id']);
                 break;
             }
         }
-
-        if ($catid > 0) {
-            $op = "cat";
-
-            $parentid = $catid;
-            while ($parentid > 0) {
-                $c = $nv_laws_listcat[$parentid];
-                $array_mod_title[] = array(
-                    'catid' => $parentid,
-                    'title' => $c['title'],
-                    'link' => NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $c['alias']
-                );
-                $parentid = $c['parentid'];
-            }
-            krsort($array_mod_title, SORT_NUMERIC);
-        }
     }
+   // var_dump($catalias);die;
+   
+    if( $count_op == 1 or substr( $array_op[1], 0, 5 ) == 'page-' )
+    {
+    
+    	if( $count_op > 1 or $catid > 0 )
+    	{
+    		$op = 'cat';
+    		if( isset( $array_op[1] ) and substr( $array_op[1], 0, 5 ) == 'page-' )
+    		{
+    			$page = intval( substr( $array_op[1], 5 ) );
+    		}
+    	}
+    	elseif( $catid == 0 && !empty( $catalias ) )
+    	{
+    	    $op = 'detail';
+    		$_row = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE alias=' . $db->quote( $catalias ) )->fetch();
+    		$catid = $_row['cid'];
+    		 
+    	}
+        
+    }
+    
+    $parentid = $catid;
+
+    while( $parentid > 0 )
+	{
+		if( isset($nv_flipbook_listcat[$parentid]) )
+		{
+			$c = $nv_flipbook_listcat[$parentid];
+			$array_mod_title[] = array(
+				'catid' => $parentid,
+				'title' => $c['title'],
+				'link' => NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $c['alias']
+			);
+			$parentid = $c['parent_id'];
+		}
+		
+	}
+	sort( $array_mod_title, SORT_NUMERIC );     
 }
 
-foreach ($nv_laws_listcat as $c) {
+
+foreach ($nv_flipbook_listcat as $c) {
     if ($c['parentid'] == 0) {
         $sub_menu = [];
         $act = ($c['id'] == $catid) ? 1 : 0;
-        if ($act or ($catid > 0 and $c['id'] == $nv_laws_listcat[$catid]['parentid'])) {
+        if ($act or ($catid > 0 and $c['id'] == $nv_flipbook_listcat[$catid]['parentid'])) {
             foreach ($c['subcats'] as $catid_i) {
-                $s_c = $nv_laws_listcat[$catid_i];
+                $s_c = $nv_flipbook_listcat[$catid_i];
                 $s_act = ($s_c['alias'] == $catalias) ? 1 : 0;
                 $s_link = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $s_c['alias'];
                 $sub_menu[] = array(

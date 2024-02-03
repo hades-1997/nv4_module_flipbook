@@ -17,7 +17,7 @@
 	<!-- END: loop -->
 </div>
 <!-- BEGIN: marquee_js -->
-<script type='text/javascript' src='{NV_BASE_SITEURL}themes/{TEMPLATE}/js/laws_jquery.marquee.js'></script>
+<script type='text/javascript' src='{NV_BASE_SITEURL}themes/{TEMPLATE}/js/flipbook_jquery.marquee.js'></script>
 <script type="text/javascript">
 	$('.marquee').marquee();
 </script>

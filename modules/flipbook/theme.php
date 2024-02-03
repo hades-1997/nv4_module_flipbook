@@ -8,7 +8,7 @@
  * @Createdate Wed, 27 Jul 2011 14:55:22 GMT
  */
 
-if (!defined('NV_IS_MOD_LAWS')) {
+if (!defined('NV_IS_MOD_FLIPBOOK')) {
     die('Stop!!!');
 }
 
@@ -21,24 +21,26 @@ if (!defined('NV_IS_MOD_LAWS')) {
  * @param boolean $show_stt
  * @return string
  */
-function nv_theme_laws_list($array_data, $generate_page = '', $show_header = true, $show_stt = true)
+function nv_theme_flipbook_list($array_data, $generate_page = '', $show_header = true, $show_stt = true)
 {
-    global $lang_module, $lang_global, $module_info, $nv_laws_setting, $module_name, $module_config;
+    global $lang_module, $lang_global, $module_info, $nv_flipbook_setting, $module_name, $module_config;
 
     $xtpl = new XTemplate('list.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
     $xtpl->assign('LANG', $lang_module);
     $xtpl->assign('GLANG', $lang_global);
-
+//var_dump($array_data);die;
     foreach ($array_data as $row) {
         $row['url_subject'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=subject/' . $row['alias'];
+        $row['link'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $row['alias']. $global_config['rewrite_exturl'];
         $row['publtime'] = $row['publtime'] ? nv_date('d/m/Y', $row['publtime']) : 'N/A';
         $row['exptime'] = $row['exptime'] ? nv_date('d/m/Y', $row['exptime']) : 'N/A';
         $row['number_comm'] = $row['number_comm'] ? sprintf($lang_module['number_comm'], number_format($row['number_comm'], 0, ',', '.')) : '';
-
+        
+        
         $xtpl->assign('ROW', $row);
 
         // Tải file trực tiếp
-        if ($nv_laws_setting['down_in_home']) {
+        if ($nv_flipbook_setting['down_in_home']) {
             if (nv_user_in_groups($row['groups_download'])) {
                 if (!empty($row['files'])) {
                     foreach ($row['files'] as $file) {
@@ -105,7 +107,7 @@ function nv_theme_laws_list($array_data, $generate_page = '', $show_header = tru
         }
 
         // Tiêu đề khi tải file
-        if ($nv_laws_setting['down_in_home']) {
+        if ($nv_flipbook_setting['down_in_home']) {
             $xtpl->parse('main.header.down_in_home');
         }
 
@@ -134,14 +136,14 @@ function nv_theme_laws_list($array_data, $generate_page = '', $show_header = tru
  * @param mixed $generate_page
  * @return
  */
-function nv_theme_laws_main($array_data, $generate_page)
+function nv_theme_flipbook_main($array_data, $generate_page)
 {
     global $lang_module, $lang_global, $module_info;
 
     $xtpl = new XTemplate('main.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
     $xtpl->assign('LANG', $lang_module);
     $xtpl->assign('GLANG', $lang_global);
-    $xtpl->assign('HTML', nv_theme_laws_list($array_data, $generate_page));
+    $xtpl->assign('HTML', nv_theme_flipbook_list($array_data, $generate_page));
     $xtpl->parse('main');
     return $xtpl->text('main');
 }
@@ -153,9 +155,9 @@ function nv_theme_laws_main($array_data, $generate_page)
  * @param mixed $array_data
  * @return
  */
-function nv_theme_laws_maincat($mod, $array_data)
+function nv_theme_flipbook_maincat($mod, $array_data)
 {
-    global $global_config, $module_name, $module_config, $lang_module, $module_info, $op, $nv_laws_setting;
+    global $global_config, $module_name, $module_config, $lang_module, $module_info, $op, $nv_flipbook_setting;
 
     $xtpl = new XTemplate('main_' . $mod . '.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
     $xtpl->assign('LANG', $lang_module);
@@ -167,7 +169,7 @@ function nv_theme_laws_maincat($mod, $array_data)
         $xtpl->assign('DATA', $data);
 
         if (!empty($data['rows'])) {
-            $xtpl->assign('HTML', nv_theme_laws_list($data['rows'], '', false, false));
+            $xtpl->assign('HTML', nv_theme_flipbook_list($data['rows'], '', false, false));
             $xtpl->parse('main.loop.rows');
         }
 
@@ -180,7 +182,7 @@ function nv_theme_laws_maincat($mod, $array_data)
         $xtpl->parse('main.publtime_title');
     }
 
-    if ($nv_laws_setting['down_in_home']) {
+    if ($nv_flipbook_setting['down_in_home']) {
         $xtpl->parse('main.down_in_home');
     }
 
@@ -198,9 +200,9 @@ function nv_theme_laws_maincat($mod, $array_data)
  * @param mixed $other_signer
  * @return
  */
-function nv_theme_laws_detail($array_data, $other_cat = array(), $other_area = array(), $other_subject = array(), $other_signer = array(), $content_comment)
+function nv_theme_flipbook_detail($array_data, $other_cat = array(), $other_area = array(), $other_subject = array(), $other_signer = array(), $content_comment)
 {
-    global $global_config, $module_name, $module_config, $module_upload, $lang_module, $module_info, $op, $nv_laws_listcat, $nv_laws_listarea, $nv_laws_listsubject, $client_info, $nv_laws_setting;
+    global $global_config, $module_name, $module_config, $module_upload, $lang_module, $module_info, $op, $nv_flipbook_listcat, $nv_flipbook_listarea, $nv_flipbook_listsubject, $client_info, $nv_flipbook_setting;
 
     $xtpl = new XTemplate($module_info['funcs'][$op]['func_name'] . '.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
     $xtpl->assign('LANG', $lang_module);
@@ -215,17 +217,17 @@ function nv_theme_laws_detail($array_data, $other_cat = array(), $other_area = a
     $array_data['end_comm_time'] = $array_data['end_comm_time'] ? nv_date('d/m/Y', $array_data['end_comm_time']) : $lang_module['unlimit'];
     $array_data['approval'] = $array_data['approval'] == 1 ? $lang_module['e1'] : $lang_module['e0'];
 
-    if (isset($nv_laws_listcat[$array_data['cid']])) {
-        $array_data['cat'] = $nv_laws_listcat[$array_data['cid']]['title'];
-        $array_data['cat_url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $nv_laws_listcat[$array_data['cid']]['alias'];
+    if (isset($nv_flipbook_listcat[$array_data['cid']])) {
+        $array_data['cat'] = $nv_flipbook_listcat[$array_data['cid']]['title'];
+        $array_data['cat_url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $nv_flipbook_listcat[$array_data['cid']]['alias'];
     } else {
         $array_data['cat'] = '';
         $array_data['cat_url'] = '#';
     }
 
-    if (isset($nv_laws_listsubject[$array_data['sid']])) {
-        $array_data['subject'] = $nv_laws_listsubject[$array_data['sid']]['title'];
-        $array_data['subject_url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=subject/' . $nv_laws_listsubject[$array_data['sid']]['alias'];
+    if (isset($nv_flipbook_listsubject[$array_data['sid']])) {
+        $array_data['subject'] = $nv_flipbook_listsubject[$array_data['sid']]['title'];
+        $array_data['subject_url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=subject/' . $nv_flipbook_listsubject[$array_data['sid']]['alias'];
     } else {
         $array_data['subject'] = '';
         $array_data['subject_url'] = '';
@@ -234,18 +236,18 @@ function nv_theme_laws_detail($array_data, $other_cat = array(), $other_area = a
 
     // Ẩn giá trị trống
     $filled_field = 0;
-    if (empty($nv_laws_setting['detail_hide_empty_field']) or !empty($array_data['cat'])) {
+    if (empty($nv_flipbook_setting['detail_hide_empty_field']) or !empty($array_data['cat'])) {
         $filled_field ++;
-        if (!empty($nv_laws_setting['detail_show_link_cat'])) {
+        if (!empty($nv_flipbook_setting['detail_show_link_cat'])) {
             $xtpl->parse('main.field.cat.link');
         } else {
             $xtpl->parse('main.field.cat.text');
         }
         $xtpl->parse('main.field.cat');
     }
-    if (empty($nv_laws_setting['detail_hide_empty_field']) or !empty($array_data['subject'])) {
+    if (empty($nv_flipbook_setting['detail_hide_empty_field']) or !empty($array_data['subject'])) {
         $filled_field ++;
-        if (!empty($nv_laws_setting['detail_show_link_subject'])) {
+        if (!empty($nv_flipbook_setting['detail_show_link_subject'])) {
             $xtpl->parse('main.field.subject.link');
         } else {
             $xtpl->parse('main.field.subject.text');
@@ -259,27 +261,27 @@ function nv_theme_laws_detail($array_data, $other_cat = array(), $other_area = a
         $xtpl->parse('main.field.approval');
     }
 
-    if ((empty($nv_laws_setting['detail_hide_empty_field']) or !empty($array_data['publtime'])) && $module_config[$module_name]['activecomm'] == 0) {
+    if ((empty($nv_flipbook_setting['detail_hide_empty_field']) or !empty($array_data['publtime'])) && $module_config[$module_name]['activecomm'] == 0) {
         $filled_field ++;
         $xtpl->parse('main.field.publtime');
     }
 
-    if ((empty($nv_laws_setting['detail_hide_empty_field']) or !empty($array_data['examine'])) && $module_config[$module_name]['activecomm'] == 1) {
+    if ((empty($nv_flipbook_setting['detail_hide_empty_field']) or !empty($array_data['examine'])) && $module_config[$module_name]['activecomm'] == 1) {
         $filled_field ++;
         $xtpl->parse('main.field.examine');
     }
 
-    if (empty($nv_laws_setting['detail_hide_empty_field']) or !empty($array_data['startvalid'])) {
+    if (empty($nv_flipbook_setting['detail_hide_empty_field']) or !empty($array_data['startvalid'])) {
         $filled_field ++;
         $xtpl->parse('main.field.startvalid');
     }
-    if (empty($nv_laws_setting['detail_hide_empty_field']) or !empty($array_data['exptime'])) {
+    if (empty($nv_flipbook_setting['detail_hide_empty_field']) or !empty($array_data['exptime'])) {
         $filled_field ++;
         $xtpl->parse('main.field.exptime');
     }
-    if (empty($nv_laws_setting['detail_hide_empty_field']) or !empty($array_data['signer'])) {
+    if (empty($nv_flipbook_setting['detail_hide_empty_field']) or !empty($array_data['signer'])) {
         $filled_field ++;
-        if (!empty($nv_laws_setting['detail_show_link_signer'])) {
+        if (!empty($nv_flipbook_setting['detail_show_link_signer'])) {
             $xtpl->parse('main.field.signer.link');
         } else {
             $xtpl->parse('main.field.signer.text');
@@ -289,11 +291,11 @@ function nv_theme_laws_detail($array_data, $other_cat = array(), $other_area = a
 
     if (!empty($array_data['aid'])) {
         foreach ($array_data['aid'] as $aid) {
-            $area['title'] = $nv_laws_listarea[$aid]['title'];
-            $area['url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=area/' . $nv_laws_listarea[$aid]['alias'];
+            $area['title'] = $nv_flipbook_listarea[$aid]['title'];
+            $area['url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=area/' . $nv_flipbook_listarea[$aid]['alias'];
             $xtpl->assign('AREA', $area);
 
-            if (!empty($nv_laws_setting['detail_show_link_area'])) {
+            if (!empty($nv_flipbook_setting['detail_show_link_area'])) {
                 $xtpl->parse('main.field.area_link');
             } else {
                 $xtpl->parse('main.field.area_text');
@@ -343,7 +345,7 @@ function nv_theme_laws_detail($array_data, $other_cat = array(), $other_area = a
 
                 $xtpl->assign('FILE', $file);
 
-                if ($file['ext'] == 'pdf' and !empty($nv_laws_setting['detail_pdf_quick_view'])) {
+                if ($file['ext'] == 'pdf' and !empty($nv_flipbook_setting['detail_pdf_quick_view'])) {
                     $xtpl->parse('main.files.loop.show_quick_view');
                     $xtpl->parse('main.files.loop.content_quick_view');
                 }
@@ -366,22 +368,22 @@ function nv_theme_laws_detail($array_data, $other_cat = array(), $other_area = a
     }
 
     if (!empty($other_cat)) {
-        $xtpl->assign('OTHER_CAT', nv_theme_laws_list_other($other_cat));
+        $xtpl->assign('OTHER_CAT', nv_theme_flipbook_list_other($other_cat));
         $xtpl->parse('main.other_cat');
     }
 
     if (!empty($other_area)) {
-        $xtpl->assign('OTHER_AREA', nv_theme_laws_list_other($other_area));
+        $xtpl->assign('OTHER_AREA', nv_theme_flipbook_list_other($other_area));
         $xtpl->parse('main.other_area');
     }
 
     if (!empty($other_subject)) {
-        $xtpl->assign('OTHER_SUBJECT', nv_theme_laws_list_other($other_subject));
+        $xtpl->assign('OTHER_SUBJECT', nv_theme_flipbook_list_other($other_subject));
         $xtpl->parse('main.other_subject');
     }
 
     if (!empty($other_signer)) {
-        $xtpl->assign('OTHER_SIGNER', nv_theme_laws_list_other($other_signer));
+        $xtpl->assign('OTHER_SIGNER', nv_theme_flipbook_list_other($other_signer));
         $xtpl->parse('main.other_signer');
     }
 
@@ -402,7 +404,7 @@ function nv_theme_laws_detail($array_data, $other_cat = array(), $other_area = a
  * @param mixed $all_page
  * @return
  */
-function nv_theme_laws_search($array_data, $generate_page, $all_page)
+function nv_theme_flipbook_search($array_data, $generate_page, $all_page)
 {
     global $global_config, $module_name, $lang_module, $module_info, $op;
 
@@ -415,7 +417,7 @@ function nv_theme_laws_search($array_data, $generate_page, $all_page)
         return $xtpl->text('empty');
     }
 
-    $xtpl->assign('HTML', nv_theme_laws_list($array_data, $generate_page));
+    $xtpl->assign('HTML', nv_theme_flipbook_list($array_data, $generate_page));
 
     $xtpl->parse('main');
     return $xtpl->text('main');
@@ -429,14 +431,14 @@ function nv_theme_laws_search($array_data, $generate_page, $all_page)
  * @param mixed $cat
  * @return
  */
-function nv_theme_laws_area($array_data, $generate_page, $cat)
+function nv_theme_flipbook_area($array_data, $generate_page, $cat)
 {
-    global $global_config, $module_name, $lang_module, $module_info, $op, $nv_laws_setting;
+    global $global_config, $module_name, $lang_module, $module_info, $op, $nv_flipbook_setting;
 
     $xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
     $xtpl->assign('LANG', $lang_module);
     $xtpl->assign('CAT', $cat);
-    $xtpl->assign('HTML', nv_theme_laws_list($array_data, $generate_page));
+    $xtpl->assign('HTML', nv_theme_flipbook_list($array_data, $generate_page));
 
     $xtpl->parse('main');
     return $xtpl->text('main');
@@ -450,14 +452,14 @@ function nv_theme_laws_area($array_data, $generate_page, $cat)
  * @param mixed $cat
  * @return
  */
-function nv_theme_laws_cat($array_data, $generate_page, $cat)
+function nv_theme_flipbook_cat($array_data, $generate_page, $cat)
 {
     global $global_config, $module_name, $lang_module, $module_info, $op;
 
     $xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
     $xtpl->assign('LANG', $lang_module);
     $xtpl->assign('CAT', $cat);
-    $xtpl->assign('HTML', nv_theme_laws_list($array_data, $generate_page));
+    $xtpl->assign('HTML', nv_theme_flipbook_list($array_data, $generate_page));
 
     $xtpl->parse('main');
     return $xtpl->text('main');
@@ -471,14 +473,14 @@ function nv_theme_laws_cat($array_data, $generate_page, $cat)
  * @param mixed $cat
  * @return
  */
-function nv_theme_laws_subject($array_data, $generate_page, $cat)
+function nv_theme_flipbook_subject($array_data, $generate_page, $cat)
 {
-    global $global_config, $module_name, $nv_laws_setting, $lang_module, $module_info, $op;
+    global $global_config, $module_name, $nv_flipbook_setting, $lang_module, $module_info, $op;
 
     $xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
     $xtpl->assign('LANG', $lang_module);
     $xtpl->assign('CAT', $cat);
-    $xtpl->assign('HTML', nv_theme_laws_list($array_data, $generate_page));
+    $xtpl->assign('HTML', nv_theme_flipbook_list($array_data, $generate_page));
 
     $xtpl->parse('main');
     return $xtpl->text('main');
@@ -492,14 +494,14 @@ function nv_theme_laws_subject($array_data, $generate_page, $cat)
  * @param mixed $cat
  * @return
  */
-function nv_theme_laws_signer($array_data, $generate_page, $cat)
+function nv_theme_flipbook_signer($array_data, $generate_page, $cat)
 {
-    global $global_config, $module_name, $lang_module, $module_info, $op, $nv_laws_setting;
+    global $global_config, $module_name, $lang_module, $module_info, $op, $nv_flipbook_setting;
 
     $xtpl = new XTemplate($op . '.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
     $xtpl->assign('LANG', $lang_module);
     $xtpl->assign('CAT', $cat);
-    $xtpl->assign('HTML', nv_theme_laws_list($array_data, $generate_page));
+    $xtpl->assign('HTML', nv_theme_flipbook_list($array_data, $generate_page));
 
     $xtpl->parse('main');
     return $xtpl->text('main');
@@ -511,9 +513,9 @@ function nv_theme_laws_signer($array_data, $generate_page, $cat)
  * @param mixed $array_data
  * @return
  */
-function nv_theme_laws_list_other($array_data)
+function nv_theme_flipbook_list_other($array_data)
 {
-    global $global_config, $module_name, $lang_module, $module_info, $op, $nv_laws_setting, $module_config, $site_mods;
+    global $global_config, $module_name, $lang_module, $module_info, $op, $nv_flipbook_setting, $module_config, $site_mods;
 
     $xtpl = new XTemplate('list_other.tpl', NV_ROOTDIR . '/themes/' . $module_info['template'] . '/modules/' . $module_info['module_theme']);
     $xtpl->assign('LANG', $lang_module);

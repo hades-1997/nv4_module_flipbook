@@ -8,7 +8,7 @@
  * @Createdate Wed, 27 Jul 2011 14:55:22 GMT
  */
 
-if (!defined('NV_IS_MOD_LAWS')) {
+if (!defined('NV_IS_MOD_FLIPBOOK')) {
     die('Stop!!!');
 }
 
@@ -20,12 +20,12 @@ $channel['link'] = NV_MY_DOMAIN . NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIA
 $channel['atomlink'] = NV_MY_DOMAIN . NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=rss";
 $channel['description'] = $global_config['site_description'];
 
-if (!empty($nv_laws_listcat)) {
+if (!empty($nv_flipbook_listcat)) {
     $catalias = isset($array_op[1]) ? $array_op[1] : "";
     $cid = 0;
 
     if (!empty($catalias)) {
-        foreach ($nv_laws_listcat as $c) {
+        foreach ($nv_flipbook_listcat as $c) {
             if ($c['alias'] == $catalias) {
                 $cid = $c['id'];
                 break;
@@ -34,15 +34,15 @@ if (!empty($nv_laws_listcat)) {
     }
 
     if ($cid > 0) {
-        $channel['title'] = $global_config['site_name'] . ' RSS: ' . $module_info['custom_title'] . ' - ' . $nv_laws_listcat[$cid]['title'];
-        $channel['link'] = NV_MY_DOMAIN . NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;cat=" . $nv_laws_listcat[$cid]['alias'];
-        $channel['description'] = $nv_laws_listcat[$cid]['introduction'];
+        $channel['title'] = $global_config['site_name'] . ' RSS: ' . $module_info['custom_title'] . ' - ' . $nv_flipbook_listcat[$cid]['title'];
+        $channel['link'] = NV_MY_DOMAIN . NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;cat=" . $nv_flipbook_listcat[$cid]['alias'];
+        $channel['description'] = $nv_flipbook_listcat[$cid]['introduction'];
 
         $sql = "SELECT id, title, alias, addtime
         FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE cid=" . $cid . "
         AND status=1 ORDER BY edittime DESC LIMIT 30";
     } else {
-        $in = array_keys($nv_laws_listcat);
+        $in = array_keys($nv_flipbook_listcat);
         $in = implode(",", $in);
         $sql = "SELECT id, title, alias, addtime
         FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE cid IN (" . $in . ")

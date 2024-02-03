@@ -35,7 +35,7 @@ $lang_module['hl1'] = 'Hết hiệu lực';
 $lang_module['e0'] = 'Chưa thông qua';
 $lang_module['e1'] = 'Đã thông qua';
 
-$lang_module['add_laws'] = 'Thêm văn bản';
+$lang_module['add_flipbook'] = 'Thêm văn bản';
 $lang_module['logChangeWeight'] = 'Thay đổi thứ tự thể loại';
 $lang_module['bodytexterror'] = 'Bạn chưa nhập nội dung cho phần nội dung chi tiết';
 $lang_module['errorCatNotExists'] = 'Lỗi! Thể loại này không tồn tại';
@@ -123,7 +123,7 @@ $lang_module['select'] = 'Chọn';
 $lang_module['noresult'] = 'Không có kết quả nào phù hợp với yêu cầu của bạn';
 
 $lang_module['enter_key'] = 'Hãy nhập thông tin để tìm một văn bản';
-$lang_module['siteinfo_numlaws'] = 'Tổng số văn bản';
+$lang_module['siteinfo_numflipbook'] = 'Tổng số văn bản';
 
 $lang_module['error_save'] = 'Hệ thống không thể nào lưu dữ liệu, bàn hãy kiểm tra lại có thể dữ liệu không đủ hoặc bị trùng';
 $lang_module['error_update'] = 'Hệ thống không thể cập nhật dữ liệu';

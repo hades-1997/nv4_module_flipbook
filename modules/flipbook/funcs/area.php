@@ -8,7 +8,7 @@
  * @Createdate Wed, 27 Jul 2011 14:55:22 GMT
  */
 
-if (!defined('NV_IS_MOD_LAWS')) {
+if (!defined('NV_IS_MOD_FLIPBOOK')) {
     die('Stop!!!');
 }
 
@@ -31,7 +31,7 @@ if (isset($array_op[3])) {
 }
 
 $catid = 0;
-foreach ($nv_laws_listarea as $c) {
+foreach ($nv_flipbook_listarea as $c) {
     if ($c['alias'] == $alias) {
         $catid = $c['id'];
         break;
@@ -43,13 +43,13 @@ if (empty($catid)) {
 }
 
 // Set page title, keywords, description
-$page_title = $mod_title = $nv_laws_listarea[$catid]['title'];
-$key_words = empty($nv_laws_listarea[$catid]['keywords']) ? $module_info['keywords'] : $nv_laws_listarea[$catid]['keywords'];
-$description = empty($nv_laws_listarea[$catid]['introduction']) ? $page_title : $nv_laws_listarea[$catid]['introduction'];
+$page_title = $mod_title = $nv_flipbook_listarea[$catid]['title'];
+$key_words = empty($nv_flipbook_listarea[$catid]['keywords']) ? $module_info['keywords'] : $nv_flipbook_listarea[$catid]['keywords'];
+$description = empty($nv_flipbook_listarea[$catid]['introduction']) ? $page_title : $nv_flipbook_listarea[$catid]['introduction'];
 
 //
-$per_page = $nv_laws_setting['numsub'];
-$base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=area/" . $nv_laws_listarea[$catid]['alias'];
+$per_page = $nv_flipbook_setting['numsub'];
+$base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=area/" . $nv_flipbook_listarea[$catid]['alias'];
 
 if (!defined('NV_IS_MODADMIN') and $page < 5) {
     $cache_file = NV_LANG_DATA . '_' . $module_info['template'] . '_' . $op . '_' . $catid . '_' . $page . '_' . NV_CACHE_PREFIX . '.cache';
@@ -59,7 +59,7 @@ if (!defined('NV_IS_MODADMIN') and $page < 5) {
 }
 
 if (empty($contents)) {
-    $cat = $nv_laws_listarea[$catid];
+    $cat = $nv_flipbook_listarea[$catid];
     $in = "";
     if (empty($cat['subcats'])) {
         $in = " t2.area_id=" . $catid;
@@ -69,7 +69,7 @@ if (empty($contents)) {
         $in = " t2.area_id IN(" . implode(",", $in) . ")";
     }
 
-    $order = ($nv_laws_setting['typeview'] == 1) ? "ASC" : "DESC";
+    $order = ($nv_flipbook_setting['typeview'] == 1) ? "ASC" : "DESC";
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM " . NV_PREFIXLANG . "_" . $module_data . "_row t1
     INNER JOIN " . NV_PREFIXLANG . "_" . $module_data . "_row_area t2 ON t1.id=t2.row_id
@@ -80,7 +80,7 @@ if (empty($contents)) {
 
     $generate_page = nv_alias_page($page_title, $base_url, $all_page, $per_page, $page);
     $array_data = $array_data = raw_law_list_by_result($result, $page, $per_page);
-    $contents = nv_theme_laws_area($array_data, $generate_page, $cat);
+    $contents = nv_theme_flipbook_area($array_data, $generate_page, $cat);
 
     if (!defined('NV_IS_MODADMIN') and $contents != '' and $cache_file != '') {
         $nv_Cache->setItem($module_name, $cache_file, $contents);

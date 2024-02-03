@@ -12,14 +12,14 @@ if (!defined('NV_MAINFILE')) die('Stop!!!');
 
 if (!function_exists('nv_law_block_search')) {
     /**
-     * nv_block_config_laws_search()
+     * nv_block_config_flipbook_search()
      *
      * @param mixed $module
      * @param mixed $data_block
      * @param mixed $lang_block
      * @return
      */
-    function nv_block_config_laws_search($module, $data_block, $lang_block)
+    function nv_block_config_flipbook_search($module, $data_block, $lang_block)
     {
         $html = '';
         $html .= '<div class="form-group">';
@@ -45,13 +45,13 @@ if (!function_exists('nv_law_block_search')) {
     }
 
     /**
-     * nv_block_config_laws_search_submit()
+     * nv_block_config_flipbook_search_submit()
      *
      * @param mixed $module
      * @param mixed $lang_block
      * @return
      */
-    function nv_block_config_laws_search_submit($module, $lang_block)
+    function nv_block_config_flipbook_search_submit($module, $lang_block)
     {
         global $nv_Request;
         $return = array();
@@ -70,7 +70,7 @@ if (!function_exists('nv_law_block_search')) {
      */
     function nv_law_block_search($block_config)
     {
-        global $my_head, $db, $lang_module, $site_mods, $global_config, $module_info, $module_file, $nv_laws_listsubject, $nv_laws_listarea, $nv_laws_listcat, $module_name, $module_config, $nv_Request, $module_data, $nv_Cache;
+        global $my_head, $db, $lang_module, $site_mods, $global_config, $module_info, $module_file, $nv_flipbook_listsubject, $nv_flipbook_listarea, $nv_flipbook_listcat, $module_name, $module_config, $nv_Request, $module_data, $nv_Cache;
 
         $module = $block_config['module'];
         $module_data = $site_mods[$module]['module_data'];
@@ -120,18 +120,18 @@ if (!function_exists('nv_law_block_search')) {
         $ssigner = $nv_Request->get_int('signer', 'get', 0);
         $is_advance = $nv_Request->get_int('is_advance', 'get', 0);
 
-        $_nv_laws_listarea = array(
+        $_nv_flipbook_listarea = array(
             0 => array(
                 "id" => 0,
                 "name" => $lang_module['search_area'],
                 "alias" => ""
             )
-        ) + $nv_laws_listarea;
+        ) + $nv_flipbook_listarea;
 
         if($module_config[$module_name]['activecomm']==0){
             $xtpl->parse('main.pubtime');
         }
-        foreach ($_nv_laws_listarea as $area) {
+        foreach ($_nv_flipbook_listarea as $area) {
             $xtpl->assign('KEY', $area['id']);
             $xtpl->assign('TITLE', $area['name']);
 
@@ -139,15 +139,15 @@ if (!function_exists('nv_law_block_search')) {
             $xtpl->parse('main.area');
         }
 
-        $nv_laws_listcat = array(
+        $nv_flipbook_listcat = array(
             0 => array(
                 "id" => 0,
                 "name" => $lang_module['search_cat'],
                 "alias" => ""
             )
-        ) + $nv_laws_listcat;
+        ) + $nv_flipbook_listcat;
 
-        foreach ($nv_laws_listcat as $area) {
+        foreach ($nv_flipbook_listcat as $area) {
             $xtpl->assign('KEY', $area['id']);
             $xtpl->assign('TITLE', $area['name']);
 
@@ -155,18 +155,18 @@ if (!function_exists('nv_law_block_search')) {
             $xtpl->parse('main.cat');
         }
 
-        $_nv_laws_listsubject = [];
-        if (!empty($nv_laws_listsubject)) {
-            $_nv_laws_listsubject = array(
+        $_nv_flipbook_listsubject = [];
+        if (!empty($nv_flipbook_listsubject)) {
+            $_nv_flipbook_listsubject = array(
                 0 => array(
                     "id" => 0,
                     "title" => $lang_module['search_subject'],
                     "alias" => ""
                 )
-            ) + $nv_laws_listsubject;
+            ) + $nv_flipbook_listsubject;
         }
 
-        foreach ($_nv_laws_listsubject as $area) {
+        foreach ($_nv_flipbook_listsubject as $area) {
             $xtpl->assign('KEY', $area['id']);
             $xtpl->assign('TITLE', $area['title']);
 

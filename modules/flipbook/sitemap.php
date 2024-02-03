@@ -12,8 +12,8 @@ if (!defined('NV_IS_MOD_SITEMAP')) {
     die('Stop!!!');
 }
 
-if (!nv_function_exists('catalog_laws_viewsub')) {
-    function catalog_laws_viewsub($list_sub)
+if (!nv_function_exists('catalog_flipbook_viewsub')) {
+    function catalog_flipbook_viewsub($list_sub)
     {
         global $db_config, $db, $site_mods, $mName;
 
@@ -32,7 +32,7 @@ if (!nv_function_exists('catalog_laws_viewsub')) {
                     $row['subcatid'][] = $subrow['id'];
                 }
 
-                $array_sub = (!empty($row['subcatid'])) ? catalog_laws_viewsub($row['subcatid']) : [];
+                $array_sub = (!empty($row['subcatid'])) ? catalog_flipbook_viewsub($row['subcatid']) : [];
                 $sublinks_i[] = array(
                     'title' => $row['title'],
                     'link' => NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $mName . "/" . $row['alias'],
@@ -57,7 +57,7 @@ while ($row = $result->fetch()) {
         $row['subcatid'][] = $subrow['id'];
     }
 
-    $array_sub = (!empty($row['subcatid'])) ? catalog_laws_viewsub($row['subcatid']) : [];
+    $array_sub = (!empty($row['subcatid'])) ? catalog_flipbook_viewsub($row['subcatid']) : [];
     $sublinks[] = array(
         'title' => $row['title'],
         'link' => NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $mName . "/" . $row['alias'],

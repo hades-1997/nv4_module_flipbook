@@ -10,16 +10,16 @@
 
 if (!defined('NV_MAINFILE')) die('Stop!!!');
 
-if (!function_exists('nv_laws_block_subject')) {
+if (!function_exists('nv_flipbook_block_subject')) {
     /**
-     * nv_block_config_laws_subject()
+     * nv_block_config_flipbook_subject()
      *
      * @param mixed $module
      * @param mixed $data_block
      * @param mixed $lang_block
      * @return
      */
-    function nv_block_config_laws_subject($module, $data_block, $lang_block)
+    function nv_block_config_flipbook_subject($module, $data_block, $lang_block)
     {
         $html = '';
         $html .= '<div class="form-group">';
@@ -38,13 +38,13 @@ if (!function_exists('nv_laws_block_subject')) {
     }
 
     /**
-     * nv_block_config_laws_subject_submit()
+     * nv_block_config_flipbook_subject_submit()
      *
      * @param mixed $module
      * @param mixed $lang_block
      * @return
      */
-    function nv_block_config_laws_subject_submit($module, $lang_block)
+    function nv_block_config_flipbook_subject_submit($module, $lang_block)
     {
         global $nv_Request;
         $return = array();
@@ -55,25 +55,25 @@ if (!function_exists('nv_laws_block_subject')) {
     }
 
     /**
-     * nv_laws_block_subject()
+     * nv_flipbook_block_subject()
      *
      * @param mixed $block_config
      * @return
      */
-    function nv_laws_block_subject($block_config)
+    function nv_flipbook_block_subject($block_config)
     {
-        global $db, $lang_module, $module_info, $site_mods, $global_config, $nv_laws_listsubject, $module_name, $nv_Cache;
+        global $db, $lang_module, $module_info, $site_mods, $global_config, $nv_flipbook_listsubject, $module_name, $nv_Cache;
 
         $module = $block_config['module'];
         $mod_data = $site_mods[$module]['module_data'];
         $mod_file = $site_mods[$module]['module_file'];
 
         if ($module != $module_name) {
-            $nv_laws_listsubject = array();
+            $nv_flipbook_listsubject = array();
             $sql = "SELECT * FROM " . NV_PREFIXLANG . "_" . $mod_data . "_subject ORDER BY weight ASC";
             $list = $nv_Cache->db($sql, 'id', $module_name);
             foreach ($list as $row) {
-                $nv_laws_listsubject[$row['id']] = $row;
+                $nv_flipbook_listsubject[$row['id']] = $row;
             }
         }
 
@@ -85,7 +85,7 @@ if (!function_exists('nv_laws_block_subject')) {
 
         $xtpl = new XTemplate("block_subject.tpl", NV_ROOTDIR . "/themes/" . $block_theme . "/modules/" . $mod_file);
 
-        foreach ($nv_laws_listsubject as $cat) {
+        foreach ($nv_flipbook_listsubject as $cat) {
             $cat['link'] = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=subject/" . $cat['alias'];
             $cat['title0'] = nv_clean60($cat['title'], $block_config['title_length']);
 
@@ -99,5 +99,5 @@ if (!function_exists('nv_laws_block_subject')) {
 }
 
 if (defined('NV_SYSTEM')) {
-    $content = nv_laws_block_subject($block_config);
+    $content = nv_flipbook_block_subject($block_config);
 }

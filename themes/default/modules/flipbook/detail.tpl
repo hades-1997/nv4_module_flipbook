@@ -11,7 +11,7 @@
 <script src="{NV_BASE_SITEURL}themes/{TEMPLATE}/modules/{MODULEINFO}/plugins/js/libs/pdf.min.js"> </script>
 <h3 class="lawh3">{DATA.title}</h3>
 <!-- BEGIN: files -->
-<div class="list-group laws-download-file">
+<div class="list-group flipbook-download-file">
     <!-- BEGIN: loop -->
     <script class="df-shortcode-script" type="application/javascript">
 

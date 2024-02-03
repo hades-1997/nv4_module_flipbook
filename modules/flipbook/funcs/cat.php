@@ -8,7 +8,7 @@
  * @Createdate Wed, 27 Jul 2011 14:55:22 GMT
  */
 
-if (!defined('NV_IS_MOD_LAWS')) {
+if (!defined('NV_IS_MOD_FLIPBOOK')) {
     die('Stop!!!');
 }
 
@@ -17,14 +17,14 @@ if (empty($catid)) {
 }
 
 // Set page title, keywords, description
-$page_title = $mod_title = $nv_laws_listcat[$catid]['title'];
-$key_words = empty($nv_laws_listcat[$catid]['keywords']) ? $module_info['keywords'] : $nv_laws_listcat[$catid]['keywords'];
-$description = empty($nv_laws_listcat[$catid]['introduction']) ? $page_title : $nv_laws_listcat[$catid]['introduction'];
+$page_title = $mod_title = $nv_flipbook_listcat[$catid]['title'];
+$key_words = empty($nv_flipbook_listcat[$catid]['keywords']) ? $module_info['keywords'] : $nv_flipbook_listcat[$catid]['keywords'];
+$description = empty($nv_flipbook_listcat[$catid]['introduction']) ? $page_title : $nv_flipbook_listcat[$catid]['introduction'];
 
 //
 $page = $nv_Request->get_int('page', 'get', 0);
-$per_page = $nv_laws_setting['numsub'];
-$base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $nv_laws_listcat[$catid]['alias'];
+$per_page = $nv_flipbook_setting['numsub'];
+$base_url = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $nv_flipbook_listcat[$catid]['alias'];
 if (isset($array_op[1])) {
     nv_redirect_location(NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&" . NV_NAME_VARIABLE . "=" . $module_name);
 }
@@ -37,7 +37,7 @@ if (!defined('NV_IS_MODADMIN') and $page < 5) {
 }
 
 if (empty($contents)) {
-    $cat = $nv_laws_listcat[$catid];
+    $cat = $nv_flipbook_listcat[$catid];
     $in = "";
     if (empty($cat['subcats'])) {
         $in = " cid=" . $catid;
@@ -47,7 +47,7 @@ if (empty($contents)) {
         $in = " cid IN(" . implode(",", $in) . ")";
     }
 
-    $order = ($nv_laws_setting['typeview'] == 1) ? "ASC" : "DESC";
+    $order = ($nv_flipbook_setting['typeview'] == 1) ? "ASC" : "DESC";
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM " . NV_PREFIXLANG . "_" . $module_data . "_row WHERE status=1 AND" . $in . " ORDER BY addtime " . $order . " LIMIT " . $page . "," . $per_page;
 
@@ -68,7 +68,7 @@ if (empty($contents)) {
 
     $generate_page = nv_generate_page($base_url, $all_page, $per_page, $page);
     $array_data = raw_law_list_by_result($result, $page, $per_page);
-    $contents = nv_theme_laws_cat($array_data, $generate_page, $cat);
+    $contents = nv_theme_flipbook_cat($array_data, $generate_page, $cat);
 
     if (!defined('NV_IS_MODADMIN') and $contents != '' and $cache_file != '') {
         $nv_Cache->setItem($module_name, $cache_file, $contents);

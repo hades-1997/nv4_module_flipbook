@@ -8,14 +8,14 @@
  * @Createdate Wed, 27 Jul 2011 14:55:22 GMT
  */
 
-if (!defined('NV_IS_MOD_LAWS')) {
+if (!defined('NV_IS_MOD_FLIPBOOK')) {
     die('Stop!!!');
 }
 
 $page_title = $module_info['site_title'];
 $key_words = $module_info['keywords'];
 
-$per_page = $nv_laws_setting['numsub'];
+$per_page = $nv_flipbook_setting['numsub'];
 
 $array_search = [];
 $key = $nv_Request->get_title('q', 'get,post', '');
@@ -72,7 +72,7 @@ if (!empty($key) or !empty($area) or !empty($cat) or !empty($subject) or !empty(
     if (!empty($area)) {
         $base_url_rewrite .= "&area=" . $area;
 
-        $tmp = $nv_laws_listarea[$area];
+        $tmp = $nv_flipbook_listarea[$area];
         $in = "";
         if (empty($tmp['subcats'])) {
             $in = " AND t2.area_id=" . $area;
@@ -88,7 +88,7 @@ if (!empty($key) or !empty($area) or !empty($cat) or !empty($subject) or !empty(
     if (!empty($cat)) {
         $base_url_rewrite .= "&cat=" . $cat;
 
-        $tmp = $nv_laws_listcat[$cat];
+        $tmp = $nv_flipbook_listcat[$cat];
         $in = "";
         if (empty($tmp['subcats'])) {
             $in = " AND cid=" . $cat;
@@ -148,7 +148,7 @@ if ($page > 1) {
 
 if (!$search) {
     include NV_ROOTDIR . '/includes/header.php';
-    echo nv_site_theme(nv_theme_laws_search([], "", 0));
+    echo nv_site_theme(nv_theme_flipbook_search([], "", 0));
     include NV_ROOTDIR . '/includes/footer.php';
 }
 
@@ -160,8 +160,8 @@ $db->sqlreset()
 
 $all_page = $db->query($db->sql())->fetchColumn();
 
-$_order = ($nv_laws_setting['typeview'] == 1 or $nv_laws_setting['typeview'] == 4) ? 'ASC' : 'DESC';
-$_order_param = ($nv_laws_setting['typeview'] == 0 or $nv_laws_setting['typeview'] == 1) ? 'publtime' : 'addtime';
+$_order = ($nv_flipbook_setting['typeview'] == 1 or $nv_flipbook_setting['typeview'] == 4) ? 'ASC' : 'DESC';
+$_order_param = ($nv_flipbook_setting['typeview'] == 0 or $nv_flipbook_setting['typeview'] == 1) ? 'publtime' : 'addtime';
 
 $db->select('*')
     ->order($_order_param . ' ' . $_order)
@@ -187,7 +187,7 @@ if ($all_page > $per_page) {
     $generate_page = nv_generate_page($_array_url, $all_page, $per_page, $page);
 }
 
-$contents = nv_theme_laws_search($array_data, $generate_page, $all_page, $array_search);
+$contents = nv_theme_flipbook_search($array_data, $generate_page, $all_page, $array_search);
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_site_theme($contents);

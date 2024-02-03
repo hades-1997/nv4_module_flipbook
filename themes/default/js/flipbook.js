@@ -18,7 +18,7 @@ function nv_delete_law(url, id) {
 }
 
 $(function() {
-    $('.laws-download-file [data-toggle="tooltip"]').tooltip({
+    $('.flipbook-download-file [data-toggle="tooltip"]').tooltip({
        container: "body"
     });
     $('[data-toggle="collapsepdf"]').each(function() {

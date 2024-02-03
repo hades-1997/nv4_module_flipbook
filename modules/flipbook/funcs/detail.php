@@ -8,40 +8,32 @@
  * @Createdate Wed, 27 Jul 2011 14:55:22 GMT
  */
 
-if (!defined('NV_IS_MOD_LAWS')) {
+if (!defined('NV_IS_MOD_FLIPBOOK')) {
     die('Stop!!!');
 }
 
-$lawalias = $alias = isset($array_op[1]) ? $array_op[1] : '';
 
-if (!preg_match('/^([a-z0-9\-\_\.]+)$/i', $alias)) {
-    nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name, true);
-}
+
+$lawalias = $alias = isset($array_op[0]) ? $array_op[0] : '';
+
 
 $sql = 'SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE alias=' . $db->quote($alias) . ' AND status=1';
-if (($result = $db->query($sql)) === false) {
-    nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name, true);
-}
-
-if (($row = $result->fetch()) === false) {
-    nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name, true);
-}
-
-if (isset($array_op[2])) {
-    nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=detail/' . $array_op[1], true);
-}
+$row = $db->query($sql)->fetch();
 
 $row['edit_link'] = NV_BASE_ADMINURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;edit=1&amp;id=" . $row['id'];
 
 $row['aid'] = [];
 $result = $db->query('SELECT area_id FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row_area WHERE row_id=' . $row['id']);
+
+
 while (list ($area_id) = $result->fetch(3)) {
     $row['aid'][] = $area_id;
 }
 
-if (!nv_user_in_groups($row['groups_view'])) {
-    nv_info_die($lang_module['info_no_allow'], $lang_module['info_no_allow'], $lang_module['info_no_allow_detail']);
-}
+//check quyền xem
+// if (!nv_user_in_groups($row['groups_view'])) {
+//     nv_info_die($lang_module['info_no_allow'], $lang_module['info_no_allow'], $lang_module['info_no_allow_detail']);
+// }
 
 if ($nv_Request->isset_request('download', 'get')) {
     $fileid = $nv_Request->get_int('id', 'get', 0);
@@ -57,14 +49,14 @@ if ($nv_Request->isset_request('download', 'get')) {
     }
 
     // Update download
-    $lawsdownloaded = $nv_Request->get_string('lawsdownloaded', 'session', '');
-    $lawsdownloaded = !empty($lawsdownloaded) ? unserialize($lawsdownloaded) : [];
-    if (!in_array($row['id'], $lawsdownloaded)) {
+    $flipbookdownloaded = $nv_Request->get_string('flipbookdownloaded', 'session', '');
+    $flipbookdownloaded = !empty($flipbookdownloaded) ? unserialize($flipbookdownloaded) : [];
+    if (!in_array($row['id'], $flipbookdownloaded)) {
         $sql = 'UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_row SET download_hits=download_hits+1 WHERE id=' . $row['id'];
         $db->query($sql);
-        $lawsdownloaded[] = $row['id'];
-        $lawsdownloaded = serialize($lawsdownloaded);
-        $nv_Request->set_Session('lawsdownloaded', $lawsdownloaded);
+        $flipbookdownloaded[] = $row['id'];
+        $flipbookdownloaded = serialize($flipbookdownloaded);
+        $nv_Request->set_Session('flipbookdownloaded', $flipbookdownloaded);
     }
 
     $file_info = pathinfo(NV_UPLOADS_REAL_DIR . '/' . $module_upload . '/' . $row['files'][$fileid]);
@@ -112,6 +104,7 @@ if (!empty($row['replacement'])) {
 $row['unreplacement'] = [];
 $sql = 'SELECT b.title, b.alias, b.code FROM ' . NV_PREFIXLANG . '_' . $module_data . '_set_replace AS a INNER JOIN ' . NV_PREFIXLANG . '_' . $module_data . '_row AS b ON a.oid=b.id WHERE a.nid=' . $row['id'];
 $result = $db->query($sql);
+
 while (list ($_title, $_alias, $_code) = $result->fetch(3)) {
     $row['unreplacement'][] = array(
         'title' => $_title,
@@ -119,6 +112,7 @@ while (list ($_title, $_alias, $_code) = $result->fetch(3)) {
         'link' => NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $module_info['alias']['detail'] . '/' . $_alias
     );
 }
+
 
 // Lay cac van ban lien quan
 if (!empty($row['relatement'])) {
@@ -172,58 +166,60 @@ if (!empty($row['files'])) {
 
 
 // Update view hit
-$lawsviewed = $nv_Request->get_string('lawsviewed', 'session', '');
-$lawsviewed = !empty($lawsviewed) ? unserialize($lawsviewed) : [];
-if (!in_array($row['id'], $lawsviewed)) {
+$flipbookviewed = $nv_Request->get_string('flipbookviewed', 'session', '');
+$flipbookviewed = !empty($flipbookviewed) ? unserialize($flipbookviewed) : [];
+if (!in_array($row['id'], $flipbookviewed)) {
     $sql = 'UPDATE ' . NV_PREFIXLANG . '_' . $module_data . '_row SET view_hits=view_hits+1 WHERE id=' . $row['id'];
     $db->query($sql);
-    $lawsviewed[] = $row['id'];
-    $lawsviewed = serialize($lawsviewed);
-    $nv_Request->set_Session('lawsviewed', $lawsviewed);
+    $flipbookviewed[] = $row['id'];
+    $flipbookviewed = serialize($flipbookviewed);
+    $nv_Request->set_Session('flipbookviewed', $flipbookviewed);
 }
 
-$order = ($nv_laws_setting['typeview'] == 1) ? 'ASC' : 'DESC';
-$nv_laws_setting['detail_other'] = unserialize($nv_laws_setting['detail_other']);
+$order = ($nv_flipbook_setting['typeview'] == 1) ? 'ASC' : 'DESC';
+$nv_flipbook_setting['detail_other'] = unserialize($nv_flipbook_setting['detail_other']);
 $other_cat = [];
 $other_area = [];
 $other_subject = [];
 $other_signer = [];
+$row['cid'] = $catid;
 
-if ($nv_laws_setting['detail_other']) {
-    if (in_array('cat', $nv_laws_setting['detail_other'])) {
-        $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE cid=' . $row['cid'] . ' AND id!=' . $row['id'] . ' ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
+if ($nv_flipbook_setting['detail_other']) {
+  
+    if (in_array('cat', $nv_flipbook_setting['detail_other'])) {
+
+        $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE cid=' . $row['cid'] . ' AND id!=' . $row['id'] . ' ORDER BY addtime ' . $order . ' LIMIT ' . $nv_flipbook_setting['other_numlinks']);
         while ($data = $result->fetch()) {
             $data['url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=detail/' . $data['alias'];
             $other_cat[$data['id']] = $data;
         }
     }
 
-    if (in_array('area', $nv_laws_setting['detail_other'])) {
+    if (in_array('area', $nv_flipbook_setting['detail_other'])) {
         $_row_aid = implode(',', $row['aid']);
-        $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row t1 INNER JOIN ' . NV_PREFIXLANG . '_' . $module_data . '_row_area t2 ON t1.id=t2.row_id WHERE t2.area_id IN (' . $_row_aid . ') AND t1.id!=' . $row['id'] . ' ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
+        $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row t1 INNER JOIN ' . NV_PREFIXLANG . '_' . $module_data . '_row_area t2 ON t1.id=t2.row_id WHERE t2.area_id IN (' . $_row_aid . ') AND t1.id!=' . $row['id'] . ' ORDER BY addtime ' . $order . ' LIMIT ' . $nv_flipbook_setting['other_numlinks']);
         while ($data = $result->fetch()) {
             $data['url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=detail/' . $data['alias'];
             $other_area[$data['id']] = $data;
         }
     }
 
-    if (in_array('subject', $nv_laws_setting['detail_other'])) {
-        $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sid=' . $row['sid'] . ' AND id!=' . $row['id'] . ' ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
+    if (in_array('subject', $nv_flipbook_setting['detail_other'])) {
+        $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sid=' . $row['sid'] . ' AND id!=' . $row['id'] . ' ORDER BY addtime ' . $order . ' LIMIT ' . $nv_flipbook_setting['other_numlinks']);
         while ($data = $result->fetch()) {
             $data['url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=detail/' . $data['alias'];
             $other_subject[$data['id']] = $data;
         }
     }
 
-    if (in_array('singer', $nv_laws_setting['detail_other'])) {
-        $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sgid=' . $row['sgid'] . ' AND id!=' . $row['id'] . ' ORDER BY addtime ' . $order . ' LIMIT ' . $nv_laws_setting['other_numlinks']);
+    if (in_array('singer', $nv_flipbook_setting['detail_other'])) {
+        $result = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_row WHERE sgid=' . $row['sgid'] . ' AND id!=' . $row['id'] . ' ORDER BY addtime ' . $order . ' LIMIT ' . $nv_flipbook_setting['other_numlinks']);
         while ($data = $result->fetch()) {
             $data['url'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=detail/' . $data['alias'];
             $other_signer[$data['id']] = $data;
         }
     }
 }
-
 // Lấy ý kiến góp ý (bình luận)
 if (isset($site_mods['comment']) and isset($module_config[$module_name]['activecomm'])) {
     define('NV_COMM_ID', $row['id']); // ID văn bản
@@ -250,7 +246,7 @@ if (isset($site_mods['comment']) and isset($module_config[$module_name]['activec
     $content_comment = '';
 }
 
-$contents = nv_theme_laws_detail($row, $other_cat, $other_area, $other_subject, $other_signer, $content_comment);
+$contents = nv_theme_flipbook_detail($row, $other_cat, $other_area, $other_subject, $other_signer, $content_comment);
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_site_theme($contents);

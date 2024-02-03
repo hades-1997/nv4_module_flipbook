@@ -12,16 +12,16 @@ if (!defined('NV_MAINFILE')) {
     die('Stop!!!');
 }
 
-if (!function_exists('nv_laws_block_cat')) {
+if (!function_exists('nv_flipbook_block_cat')) {
     /**
-     * nv_block_config_laws_cat()
+     * nv_block_config_flipbook_cat()
      *
      * @param mixed $module
      * @param mixed $data_block
      * @param mixed $lang_block
      * @return
      */
-    function nv_block_config_laws_cat($module, $data_block, $lang_block)
+    function nv_block_config_flipbook_cat($module, $data_block, $lang_block)
     {
         $html = '';
         $html .= '<div class="form-group">';
@@ -40,13 +40,13 @@ if (!function_exists('nv_laws_block_cat')) {
     }
 
     /**
-     * nv_block_config_laws_cat_submit()
+     * nv_block_config_flipbook_cat_submit()
      *
      * @param mixed $module
      * @param mixed $lang_block
      * @return
      */
-    function nv_block_config_laws_cat_submit($module, $lang_block)
+    function nv_block_config_flipbook_cat_submit($module, $lang_block)
     {
         global $nv_Request;
         $return = array();
@@ -57,14 +57,14 @@ if (!function_exists('nv_laws_block_cat')) {
     }
 
     /**
-     * nv_laws_block_cat()
+     * nv_flipbook_block_cat()
      *
      * @param mixed $block_config
      * @return
      */
-    function nv_laws_block_cat($block_config)
+    function nv_flipbook_block_cat($block_config)
     {
-        global $lang_module, $module_info, $global_config, $site_mods, $nv_laws_listcat, $module_name;
+        global $lang_module, $module_info, $global_config, $site_mods, $nv_flipbook_listcat, $module_name;
 
         $module = $block_config['module'];
         $mod_data = $site_mods[$module]['module_data'];
@@ -81,7 +81,7 @@ if (!function_exists('nv_laws_block_cat')) {
         $html = "";
 
         $i = 1;
-        foreach ($nv_laws_listcat as $cat) {
+        foreach ($nv_flipbook_listcat as $cat) {
             if ($cat['id'] == 0) continue;
             if ($cat['parentid'] == 0) {
                 $link = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module . "&amp;" . NV_OP_VARIABLE . "=" . $cat['alias'];
@@ -108,17 +108,17 @@ if (!function_exists('nv_laws_block_cat')) {
      */
     function nv_content_subcat($list_sub, $title_length)
     {
-        global $nv_laws_listcat, $module_name;
+        global $nv_flipbook_listcat, $module_name;
 
         if (empty($list_sub))
             return "";
         else {
             $html = "<ul>\n";
             foreach ($list_sub as $catid) {
-                $link = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $nv_laws_listcat[$catid]['alias'];
+                $link = NV_BASE_SITEURL . "index.php?" . NV_LANG_VARIABLE . "=" . NV_LANG_DATA . "&amp;" . NV_NAME_VARIABLE . "=" . $module_name . "&amp;" . NV_OP_VARIABLE . "=" . $nv_flipbook_listcat[$catid]['alias'];
                 $html .= "<li>\n";
-                $html .= "<a title=\"" . $nv_laws_listcat[$catid]['title'] . "\" href=\"" . $link . "\">" . nv_clean60($nv_laws_listcat[$catid]['title'], $title_length) . "</a>\n";
-                if (!empty($nv_laws_listcat[$catid]['subcats'])) $html .= nv_content_subcat($nv_laws_listcat[$catid]['subcats'], $title_length);
+                $html .= "<a title=\"" . $nv_flipbook_listcat[$catid]['title'] . "\" href=\"" . $link . "\">" . nv_clean60($nv_flipbook_listcat[$catid]['title'], $title_length) . "</a>\n";
+                if (!empty($nv_flipbook_listcat[$catid]['subcats'])) $html .= nv_content_subcat($nv_flipbook_listcat[$catid]['subcats'], $title_length);
                 $html .= "</li>\n";
             }
             $html .= "</ul>\n";
@@ -128,7 +128,7 @@ if (!function_exists('nv_laws_block_cat')) {
 }
 
 if (defined('NV_SYSTEM')) {
-    global $site_mods, $module_name, $nv_laws_listcat, $module_array_cat, $nv_Cache;
+    global $site_mods, $module_name, $nv_flipbook_listcat, $module_array_cat, $nv_Cache;
     $module = $block_config['module'];
 
     if (isset($site_mods[$module])) {
@@ -140,8 +140,8 @@ if (defined('NV_SYSTEM')) {
                 $module_array_cat[$l['id']] = $l;
                 $module_array_cat[$l['id']]['link'] = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module . '&amp;' . NV_OP_VARIABLE . '=' . $l['alias'];
             }
-            $nv_laws_listcat = $module_array_cat;
+            $nv_flipbook_listcat = $module_array_cat;
         }
-        $content = nv_laws_block_cat($block_config);
+        $content = nv_flipbook_block_cat($block_config);
     }
 }

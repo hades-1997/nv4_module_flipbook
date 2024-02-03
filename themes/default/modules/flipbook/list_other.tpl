@@ -1,5 +1,5 @@
 <!-- BEGIN: main -->
-<div class="flex-table-laws">
+<div class="flex-table-flipbook">
     <div class="table-rows table-head">
         <div class="c-code">{LANG.code}</div>
         <!-- BEGIN: publtime_title -->

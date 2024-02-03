@@ -8,7 +8,7 @@
  * @Createdate Jul 06, 2011, 06:31:13 AM
  */
 
-if (!defined('NV_IS_MOD_LAWS')) {
+if (!defined('NV_IS_MOD_FLIPBOOK')) {
     die('Stop!!!');
 }
 
@@ -18,7 +18,7 @@ if (!function_exists('nv_law_block_singer')) {
      */
     function nv_law_block_singer()
     {
-        global $lang_module, $module_info, $module_file, $global_config, $nv_laws_listsubject, $module_name, $db, $module_data;
+        global $lang_module, $module_info, $module_file, $global_config, $nv_flipbook_listsubject, $module_name, $db, $module_data;
 
         if (file_exists(NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file . '/block_signer.tpl')) {
             $block_theme = $global_config['module_theme'];
